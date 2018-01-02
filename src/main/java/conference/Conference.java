@@ -2,6 +2,7 @@ package conference;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import conference.file.FileUtils;
@@ -23,6 +24,7 @@ public class Conference {
 	
 	public List<Track> createTracks(List<Talk> talks) {
 		List<Talk> remainingTalks = new ArrayList<Talk>(talks);
+		Collections.sort(remainingTalks);
 		List<Track> tracks = new ArrayList<Track>();
 		
 		int count = 1;
@@ -30,7 +32,7 @@ public class Conference {
 			// MORNING SESSION
 			Session session = new MorningSession();			
 			Track track = new Track("Track " + count);
-			session = addTalksToSessionMorning(remainingTalks, session);		
+			session = addTalksToSessions(remainingTalks, session);		
 			remainingTalks.removeAll(session.getTalks());		
 			track.getTalks().addAll(session.getTalks());
 			
@@ -38,7 +40,7 @@ public class Conference {
 			
 			// AFTERNOON SESSION
 			session = new AfternoonSession();		
-			session = addTalksToSessionAfternoon(remainingTalks, session);		
+			session = addTalksToSessions(remainingTalks, session);		
 			remainingTalks.removeAll(session.getTalks());		
 			track.getTalks().addAll(session.getTalks());		
 			tracks.add(track);
@@ -51,26 +53,7 @@ public class Conference {
 		return tracks;
 	}
 	
-	private Session addTalksToSessionMorning(List<Talk> talks, Session session) {
-		int usedLimit = 0;
-		for (Talk talk : talks) {
-			if ((session.limitTime - talk.getDuration()) > 0) {
-				if (usedLimit % 60 == 0 && talk.getDuration() == 60) {
-					session.addTalkToSession(talk);
-					usedLimit += talk.getDuration();
-				} else if ((usedLimit % 60 == 45 || usedLimit % 60 == 15 || usedLimit % 45 == 0) && (talk.getDuration() == 45)) {
-					session.addTalkToSession(talk);
-					usedLimit += talk.getDuration();
-				} else if ((usedLimit % 60 != 0 && usedLimit % 30 == 0) && (talk.getDuration() == 30)) {
-					session.addTalkToSession(talk);
-					usedLimit += talk.getDuration();
-				}
-			}
-		}
-		return session;
-	}
-	
-	private Session addTalksToSessionAfternoon(List<Talk> talks, Session session) {
+	private Session addTalksToSessions(List<Talk> talks, Session session) {
 		for (Talk talk : talks) {
 			if ((session.limitTime - talk.getDuration()) > 0) {
 					session.addTalkToSession(talk);

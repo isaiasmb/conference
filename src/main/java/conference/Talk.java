@@ -1,10 +1,8 @@
 package conference;
 
-import java.util.Comparator;
-
 import conference.time.Time;
 
-public class Talk implements Comparator<Talk> {
+public class Talk implements Comparable<Talk> {
 
 	private String title;
 	private Time time;
@@ -44,13 +42,14 @@ public class Talk implements Comparator<Talk> {
 		this.time = time;
 	}
 
-	public int compare(Talk talk1, Talk talk2) {
-		return (talk1.getDuration() > talk2.getDuration() ? 1 : 0);
+	public int compareTo(Talk talk1) {
+		return (talk1.getDuration() < this.getDuration() ? -1 : 0);
 	}
-
+	
 	@Override
 	public String toString() {
 		return time + " " + title + (duration > 0 ? " " + duration + "min" : "");
 	}
+
 
 }
