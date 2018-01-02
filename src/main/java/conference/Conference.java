@@ -32,7 +32,7 @@ public class Conference {
 			// MORNING SESSION
 			Session session = new MorningSession();			
 			Track track = new Track("Track " + count);
-			session = addTalksToSessions(remainingTalks, session);		
+			session = addTalksToSessionMorning(remainingTalks, session);		
 			remainingTalks.removeAll(session.getTalks());		
 			track.getTalks().addAll(session.getTalks());
 			
@@ -40,7 +40,7 @@ public class Conference {
 			
 			// AFTERNOON SESSION
 			session = new AfternoonSession();		
-			session = addTalksToSessions(remainingTalks, session);		
+			session = addTalksToSessionAfternoon(remainingTalks, session);		
 			remainingTalks.removeAll(session.getTalks());		
 			track.getTalks().addAll(session.getTalks());		
 			tracks.add(track);
@@ -53,7 +53,27 @@ public class Conference {
 		return tracks;
 	}
 	
-	private Session addTalksToSessions(List<Talk> talks, Session session) {
+	private Session addTalksToSessionMorning(List<Talk> talks, Session session) {
+		int usedLimit = 0;
+		int totalLimit = session.limitTime;
+		for (Talk talk : talks) {
+			if ((usedLimit + talk.getDuration()) <= totalLimit) {
+				if (usedLimit % 60 == 0 && talk.getDuration() == 60) {
+					session.addTalkToSession(talk);
+					usedLimit += talk.getDuration();
+				} else if ((usedLimit % 60 == 45 || usedLimit % 60 == 15 || usedLimit % 45 == 0) && (talk.getDuration() == 45)) {
+					session.addTalkToSession(talk);
+					usedLimit += talk.getDuration();
+				} else if ((usedLimit % 60 != 0 && usedLimit % 30 == 0) && (talk.getDuration() == 30)) {
+					session.addTalkToSession(talk);
+					usedLimit += talk.getDuration();
+				}
+			}
+		}
+		return session;
+	}
+	
+	private Session addTalksToSessionAfternoon(List<Talk> talks, Session session) {
 		for (Talk talk : talks) {
 			if ((session.limitTime - talk.getDuration()) > 0) {
 					session.addTalkToSession(talk);
