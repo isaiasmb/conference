@@ -81,12 +81,7 @@ public class Conference {
 		}
 		return session;
 	}
-	
-	public static void main(String[] args) {
-		int value = 0;
-		System.out.println(value % 60);
-	}
-	
+		
 	private Talk createNetworkingEvent(Track track) {
 		Talk lastTalk = track.getTalks().get(track.getTalks().size() - 1);
 		Time newTime = TimeUtils.addMinutesToTime(lastTalk.getTime().getHour(), lastTalk.getTime().getMinute(), lastTalk.getDuration());
